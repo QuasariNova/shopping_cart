@@ -1,15 +1,19 @@
 import { useState } from "react";
 import EditForm from "./editForm.jsx";
 
-const Product = ({ title, price, quantity }) => {
+const Product = ({ product, onEditItem, onDeleteItem }) => {
   const [editVisible, setEditVisible] = useState(false);
+
+  const handleDeleteItem = () => {
+    onDeleteItem(product._id);
+  };
 
   return (
     <li className="product">
       <div className="product-details">
-        <h3>{title}</h3>
-        <p className="price">${price}</p>
-        <p className="quantity">{quantity} left in stock</p>
+        <h3>{product.title}</h3>
+        <p className="price">${product.price}</p>
+        <p className="quantity">{product.quantity} left in stock</p>
         <div className="actions product-actions">
           <button className="add-to-cart">Add to Cart</button>
           <button
@@ -19,12 +23,18 @@ const Product = ({ title, price, quantity }) => {
             Edit
           </button>
         </div>
-        <button className="delete-button">
+        <button className="delete-button" onClick={handleDeleteItem}>
           <span>X</span>
         </button>
       </div>
 
-      {editVisible && <EditForm />}
+      {editVisible && (
+        <EditForm
+          product={product}
+          onCancel={() => setEditVisible(false)}
+          onEditItem={onEditItem}
+        />
+      )}
     </li>
   );
 };

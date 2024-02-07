@@ -23,7 +23,6 @@ const App = () => {
   }, []);
 
   const handleAddItem = async (newItem, callback) => {
-    console.log(newItem);
     try {
       const { data } = await axios.post("/api/products", newItem);
       setProducts(products.concat(data));
@@ -36,14 +35,47 @@ const App = () => {
     }
   };
 
+  const handleEditItem = async (id, edited, callback) => {
+    try {
+      const { data } = await axios.put(`/api/products/${id}`, edited);
+      setProducts(
+        products.map((product) => {
+          if (product._id === id) {
+            return data;
+          }
+          return product;
+        }),
+      );
+
+      if (callback) {
+        callback();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleDeleteItem = async (id) => {
+    try {
+      await axios.delete(`/api/products/${id}`);
+      setProducts(products.filter((product) => product._id !== id));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
     <>
       <Header />
 
       <main>
-        <ProductListing products={products} />
+        <ProductListing
+          products={products}
+          onEditItem={handleEditItem}
+          onDeleteItem={handleDeleteItem}
+        />
 
-        <AddForm onSubmit={handleAddItem} />
+        <AddForm onAddItem={handleAddItem} />
       </main>
     </>
   );

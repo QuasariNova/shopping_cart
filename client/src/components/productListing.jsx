@@ -1,16 +1,16 @@
 import Product from "./product.jsx";
 
-const ProductListing = ({ products }) => {
+const ProductListing = ({ products, onEditItem, onDeleteItem }) => {
   return (
     <div className="product-listing">
       <h2>Products</h2>
       <ul className="product-list">
         {products.map((product) => (
           <Product
-            key={product.id}
-            title={product.title}
-            price={product.price}
-            quantity={product.quantity}
+            key={product._id}
+            product={product}
+            onEditItem={onEditItem}
+            onDeleteItem={onDeleteItem}
           />
         ))}
       </ul>

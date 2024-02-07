@@ -1,14 +1,27 @@
-const EditForm = () => {
+import { useState } from "react";
+
+const EditForm = ({ product, onEditItem, onCancel }) => {
+  const [title, setTitle] = useState(product.title);
+  const [price, setPrice] = useState(product.price);
+  const [quantity, setQuantity] = useState(product.quantity);
+
+  const handleEditItem = (e) => {
+    e.preventDefault();
+    const edited = { title, price, quantity };
+    onEditItem(product._id, edited, onCancel);
+  };
+
   return (
     <div className="edit-form">
       <h3>Edit Product</h3>
-      <form>
+      <form onSubmit={handleEditItem}>
         <div className="input-group">
           <label htmlFor="product-name">Product Name</label>
           <input
             type="text"
             id="product-name"
-            value="Apple 10.5-Inch iPad Pro"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
             aria-label="Product Name"
           />
         </div>
@@ -18,7 +31,8 @@ const EditForm = () => {
           <input
             type="number"
             id="product-price"
-            value="649.99"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
             aria-label="Product Price"
           />
         </div>
@@ -28,14 +42,17 @@ const EditForm = () => {
           <input
             type="number"
             id="product-quantity"
-            value="2"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
             aria-label="Product Quantity"
           />
         </div>
 
         <div className="actions form-actions">
           <button type="submit">Update</button>
-          <button type="button">Cancel</button>
+          <button type="button" onClick={onCancel}>
+            Cancel
+          </button>
         </div>
       </form>
     </div>

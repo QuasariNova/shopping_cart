@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const AddForm = ({ onSubmit }) => {
+const AddForm = ({ onAddItem }) => {
   const [visible, setVisible] = useState(false);
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState(0);
@@ -20,7 +20,7 @@ const AddForm = ({ onSubmit }) => {
       price: productPrice,
       quantity: productQuantity,
     };
-    onSubmit(newProduct, handleClearForm);
+    onAddItem(newProduct, handleClearForm);
   };
 
   return (
