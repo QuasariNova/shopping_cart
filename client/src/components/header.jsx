@@ -1,10 +1,10 @@
 import Cart from "./cart.jsx";
 
-const Header = () => {
+const Header = ({ cartItems, onCheckout }) => {
   return (
     <header>
       <h1>The Shop!</h1>
-      <Cart />
+      <Cart cartItems={cartItems} onCheckout={onCheckout} />
     </header>
   );
 };

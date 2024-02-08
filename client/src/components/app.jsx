@@ -1,30 +1,46 @@
-import axios from "axios";
-
 import AddForm from "./addForm.jsx";
 import Header from "./header.jsx";
 import ProductListing from "./productListing.jsx";
 
-// import productData from "../mockData/data.js";
 import { useEffect, useState } from "react";
+import {
+  addProduct,
+  deleteProduct,
+  editProduct,
+  getProducts,
+} from "../services/products.js";
+import { addToCart, checkout, getCart } from "../services/cart.js";
 
 const App = () => {
   const [products, setProducts] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
-    const handleProducts = async () => {
+    const handleGetProducts = async () => {
       try {
-        const { data } = await axios.get("/api/products");
+        const data = await getProducts();
         setProducts(data);
       } catch (e) {
         console.error(e);
       }
     };
-    handleProducts();
+
+    const handleGetCart = async () => {
+      try {
+        const data = await getCart();
+        setCartItems(data);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    handleGetProducts();
+    handleGetCart();
   }, []);
 
   const handleAddItem = async (newItem, callback) => {
     try {
-      const { data } = await axios.post("/api/products", newItem);
+      const data = await addProduct(newItem);
       setProducts(products.concat(data));
 
       if (callback) {
@@ -37,7 +53,7 @@ const App = () => {
 
   const handleEditItem = async (id, edited, callback) => {
     try {
-      const { data } = await axios.put(`/api/products/${id}`, edited);
+      const data = await editProduct(id, edited);
       setProducts(
         products.map((product) => {
           if (product._id === id) {
@@ -57,8 +73,45 @@ const App = () => {
 
   const handleDeleteItem = async (id) => {
     try {
-      await axios.delete(`/api/products/${id}`);
+      await deleteProduct(id);
       setProducts(products.filter((product) => product._id !== id));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleAddToCart = async (id) => {
+    try {
+      const resp = await addToCart(id);
+      setCartItems((previous) => {
+        if (previous.find((item) => item.productId === id)) {
+          return previous.map((item) => {
+            if (item.productId === id) {
+              return resp.item;
+            }
+            return item;
+          });
+        }
+        return previous.concat(resp.item);
+      });
+
+      setProducts((previous) =>
+        previous.map((item) => {
+          if (item._id === id) {
+            return resp.product;
+          }
+          return item;
+        }),
+      );
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleCheckout = async () => {
+    try {
+      await checkout();
+      setCartItems([]);
     } catch (e) {
       console.error(e);
     }
@@ -66,13 +119,14 @@ const App = () => {
 
   return (
     <>
-      <Header />
+      <Header cartItems={cartItems} onCheckout={handleCheckout} />
 
       <main>
         <ProductListing
           products={products}
           onEditItem={handleEditItem}
           onDeleteItem={handleDeleteItem}
+          onAddToCart={handleAddToCart}
         />
 
         <AddForm onAddItem={handleAddItem} />

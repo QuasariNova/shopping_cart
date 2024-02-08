@@ -1,6 +1,11 @@
 import Product from "./product.jsx";
 
-const ProductListing = ({ products, onEditItem, onDeleteItem }) => {
+const ProductListing = ({
+  products,
+  onEditItem,
+  onDeleteItem,
+  onAddToCart,
+}) => {
   return (
     <div className="product-listing">
       <h2>Products</h2>
@@ -11,6 +16,7 @@ const ProductListing = ({ products, onEditItem, onDeleteItem }) => {
             product={product}
             onEditItem={onEditItem}
             onDeleteItem={onDeleteItem}
+            onAddToCart={onAddToCart}
           />
         ))}
       </ul>
